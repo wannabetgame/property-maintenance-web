@@ -186,7 +186,7 @@ export default function HandymanDashboard() {
             
             <div className="space-y-3 mb-4">
               <h4 className="font-medium text-xs uppercase tracking-wide text-gray-500">Existing Photos</h4>
-              {selectedOrder.photos?.length > 0 ? (
+                            {selectedOrder.photos && selectedOrder.photos.length > 0 ? (
                 <div className="grid grid-cols-2 gap-3">
                   {selectedOrder.photos.map(p => (
                     <img
