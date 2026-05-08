@@ -14,7 +14,6 @@ type WorkOrder = {
   sla_deadline: string
   created_at: string
   assigned_handyman_id: string | null
-  // ✅ Fixed: Added nested relation types to match Supabase query
   tenant: { email: string } | null
   property: { name: string } | null
   photos: { id: string; storage_path: string; caption: string }[]
@@ -119,7 +118,6 @@ export default function HandymanDashboard() {
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <div>
             <h1 className="text-2xl font-bold">🛠️ My Assigned Jobs</h1>
@@ -130,7 +128,6 @@ export default function HandymanDashboard() {
           </button>
         </div>
 
-        {/* Job List */}
         <div className="space-y-4">
           {orders.length === 0 ? (
             <div className="bg-white rounded-lg p-8 text-center text-gray-500 border shadow-sm">
@@ -149,7 +146,6 @@ export default function HandymanDashboard() {
                 <p className="text-gray-600 text-sm mb-3 line-clamp-2">{order.description}</p>
                 
                 <div className="flex flex-wrap gap-4 text-sm text-gray-500 mb-4">
-                  {/* ✅ Now safely typed */}
                   <span>👤 {order.tenant?.email || 'Tenant hidden'}</span>
                   <span>📍 {order.property?.name || 'Property TBD'}</span>
                   <span className={`px-2 py-0.5 rounded text-xs ${
@@ -169,7 +165,6 @@ export default function HandymanDashboard() {
                       🟢 Start Job
                     </button>
                   )}
-                  
                   <button
                     onClick={() => setSelectedOrder(order)}
                     className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm font-medium transition"
@@ -183,7 +178,6 @@ export default function HandymanDashboard() {
         </div>
       </div>
 
-      {/* Photo & Completion Modal */}
       {selectedOrder && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" onClick={() => setSelectedOrder(null)}>
           <div className="bg-white rounded-xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 shadow-xl" onClick={e => e.stopPropagation()}>
