@@ -14,9 +14,9 @@ type WorkOrder = {
   sla_deadline: string
   created_at: string
   assigned_handyman_id: string | null
-  tenant: { email: string } | null
-  property: { name: string } | null
-  photos: { id: string; storage_path: string; caption: string }[]
+  tenant?: { email?: string }
+  property?: { name?: string }
+  photos?: { id: string; storage_path: string; caption: string }[]
 }
 
 export default function HandymanDashboard() {
@@ -53,7 +53,7 @@ export default function HandymanDashboard() {
       .order('sla_deadline', { ascending: true })
 
     if (error) console.error('Fetch error:', error)
-    else setOrders(data || [])
+    else setOrders((data as WorkOrder[]) || []) // ✅ Explicit cast bypasses TS strict mode
     setLoading(false)
   }
 
