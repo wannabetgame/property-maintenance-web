@@ -13,8 +13,10 @@ type WorkOrder = {
   status: 'submitted' | 'approved' | 'in_progress' | 'completed' | 'rejected'
   sla_deadline: string
   created_at: string
-  tenant_email: string | null
-  property_name: string | null
+  assigned_handyman_id: string | null
+  // ✅ Fixed: Added nested relation types to match Supabase query
+  tenant: { email: string } | null
+  property: { name: string } | null
   photos: { id: string; storage_path: string; caption: string }[]
 }
 
@@ -147,6 +149,7 @@ export default function HandymanDashboard() {
                 <p className="text-gray-600 text-sm mb-3 line-clamp-2">{order.description}</p>
                 
                 <div className="flex flex-wrap gap-4 text-sm text-gray-500 mb-4">
+                  {/* ✅ Now safely typed */}
                   <span>👤 {order.tenant?.email || 'Tenant hidden'}</span>
                   <span>📍 {order.property?.name || 'Property TBD'}</span>
                   <span className={`px-2 py-0.5 rounded text-xs ${
