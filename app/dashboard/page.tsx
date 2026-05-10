@@ -1,48 +1,36 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useAuth } from '@/lib/auth/context'
 import { supabase } from '@/lib/supabase'
+import OwnerDashboard from '@/components/OwnerDashboard'
+import TenantDashboard from '@/components/TenantDashboard' // Keep your existing tenant view
+import HandymanDashboard from '@/components/HandymanDashboard' // Keep your existing handyman view
 
 export default function DashboardRouter() {
-  const { user, loading: authLoading } = useAuth()
   const router = useRouter()
+  const [role, setRole] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (!authLoading) {
-      if (!user) {
-        router.push('/login')
-      } else {
-        const fetchRole = async () => {
-          const { data, error } = await supabase
-            .from('users')
-            .select('role')
-            .eq('id', user.id)
-            .single()
-          
-          if (error) {
-            console.error('Role fetch error:', error)
-            router.push('/login')
-          } else {
-            // Redirect to role-specific dashboard
-            switch (data.role) {
-              case 'tenant': router.push('/dashboard/tenant'); break
-              case 'owner': router.push('/dashboard/owner'); break
-              case 'handyman': router.push('/dashboard/handyman'); break
-              case 'admin': router.push('/dashboard/admin'); break
-              default: router.push('/login')
-            }
-          }
-        }
-        fetchRole()
-      }
+    async function checkAuth() {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return router.replace('/login')
+
+      const { data } = await supabase.from('users').select('role').eq('id', user.id).single()
+      setRole(data?.role || 'tenant')
+      setLoading(false)
     }
-  }, [user, authLoading, router])
+    checkAuth()
+  }, [])
+
+  if (loading) return <div className="flex h-screen items-center justify-center">Verifying access...</div>
 
   return (
-    <div className="flex min-h-screen items-center justify-center text-gray-500">
-      Loading your dashboard...
-    </div>
+    <>
+      {role === 'owner' && <OwnerDashboard />}
+      {role === 'tenant' && <TenantDashboard />}
+      {role === 'handyman' && <HandymanDashboard />}
+    </>
   )
 }
