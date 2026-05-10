@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
-import OwnerDashboard from '@/components/OwnerDashboard' // ✅ Only import the one we just created
+import OwnerDashboard from '@/components/OwnerDashboard'
 
 export default function DashboardPage() {
   const router = useRouter()
@@ -13,7 +13,7 @@ export default function DashboardPage() {
   useEffect(() => {
     async function checkAuth() {
       // 1. Get current user
-      const {  { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await supabase.auth.getUser() // ✅ Fixed destructuring
       if (!user) return router.replace('/login')
 
       // 2. Get their role from the users table
@@ -38,14 +38,13 @@ export default function DashboardPage() {
     return <OwnerDashboard />
   }
 
-  // ✅ Fallback for Tenant/Handyman (your existing dashboard code goes here)
+  // ✅ Fallback for Tenant/Handyman
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-2xl font-bold mb-4"> Welcome, {role}!</h1>
         <p className="text-gray-600 mb-6">Your personalized dashboard is loading...</p>
         
-        {/* 👇 PASTE YOUR EXISTING TENANT/HANDYMAN DASHBOARD CODE HERE LATER */}
         <div className="bg-white p-6 rounded-lg border">
           <p>✅ You're logged in.</p>
           <p className="text-sm text-gray-500 mt-2">Role: <strong>{role}</strong></p>
