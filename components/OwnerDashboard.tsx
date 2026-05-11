@@ -17,15 +17,14 @@ export default function OwnerDashboard() {
 
   const fetchDashboardData = async () => {
     try {
-      // ✅ FIXED: Added "data:" alias
+      // ✅ Correct Supabase destructuring
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return router.replace('/login')
 
-      // ✅ FIXED: Added "data:" alias
       const { data: profile } = await supabase.from('users').select('role').eq('id', user.id).single()
       if (profile?.role !== 'owner') return router.replace('/dashboard')
 
-      // 2. Fetch counts efficiently
+      // Fetch counts efficiently
       const [bRes, tRes, hRes, jRes] = await Promise.all([
         supabase.from('buildings').select('*', { count: 'exact', head: true }),
         supabase.from('users').select('*', { count: 'exact', head: true }).eq('role', 'tenant'),
@@ -73,7 +72,7 @@ export default function OwnerDashboard() {
       {/* Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <StatCard title="Buildings" value={stats.buildings} icon="🏢" color="bg-blue-50 text-blue-700" />
-        <StatCard title="Tenants" value={stats.tenants} icon="" color="bg-purple-50 text-purple-700" />
+        <StatCard title="Tenants" value={stats.tenants} icon="👥" color="bg-purple-50 text-purple-700" />
         <StatCard title="Handymen" value={stats.handymen} icon="🔧" color="bg-orange-50 text-orange-700" />
         <StatCard title="Active Jobs" value={stats.jobs} icon="📋" color="bg-green-50 text-green-700" />
       </div>
@@ -83,11 +82,9 @@ export default function OwnerDashboard() {
         <h2 className="text-xl font-semibold text-gray-900 mb-4">Management Hub</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* 🏘️ Buildings - Coming Soon */}
-          <button 
-            onClick={() => alert('🏘️ Building management is coming in the next update!')}
-            className="group block p-5 border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition bg-white text-left w-full"
-          >
+          
+          {/* 🏘️ Buildings - ✅ NOW LINKS TO REAL PAGE */}
+          <Link href="/dashboard/owner/buildings" className="group block p-5 border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition bg-white">
             <div className="flex items-start gap-3">
               <span className="text-2xl">🏘️</span>
               <div>
@@ -95,7 +92,7 @@ export default function OwnerDashboard() {
                 <p className="text-sm text-gray-500 mt-1">View properties, addresses, and tenant assignments</p>
               </div>
             </div>
-          </button>
+          </Link>
 
           {/* 👥 Team - ✅ Fully Working */}
           <Link href="/dashboard/owner/team" className="group block p-5 border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition bg-white">
@@ -110,7 +107,7 @@ export default function OwnerDashboard() {
 
           {/* 📝 Work Orders - Coming Soon */}
           <button 
-            onClick={() => alert(' Work Order monitoring is coming in the next update!')}
+            onClick={() => alert('📝 Work Order monitoring is coming in the next update!')}
             className="group block p-5 border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition bg-white text-left w-full"
           >
             <div className="flex items-start gap-3">
@@ -121,6 +118,7 @@ export default function OwnerDashboard() {
               </div>
             </div>
           </button>
+
         </div>
       </div>
     </div>
