@@ -18,10 +18,10 @@ export default function OwnerDashboard() {
   const fetchDashboardData = async () => {
     try {
       // 1. Verify user is actually an owner
-      const { data: { user } } = await supabase.auth.getUser()
+      const {  { user } } = await supabase.auth.getUser()
       if (!user) return router.replace('/login')
 
-      const { data: profile } = await supabase.from('users').select('role').eq('id', user.id).single()
+      const {  profile } = await supabase.from('users').select('role').eq('id', user.id).single()
       if (profile?.role !== 'owner') return router.replace('/dashboard')
 
       // 2. Fetch counts (optimized with head: true)
@@ -58,7 +58,7 @@ export default function OwnerDashboard() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900"> Owner Dashboard</h1>
+          <h1 className="text-3xl font-bold text-gray-900"> 👑 Owner Dashboard</h1>
           <p className="text-gray-500 mt-1">Manage properties, staff, and maintenance requests</p>
         </div>
         <button 
@@ -77,28 +77,51 @@ export default function OwnerDashboard() {
         <StatCard title="Active Jobs" value={stats.jobs} icon="📋" color="bg-green-50 text-green-700" />
       </div>
 
-      {/* Management Cards */}
+      {/* Management Hub */}
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">Management Hub</h2>
+        
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <ManagementCard 
-            title="Buildings" 
-            desc="View properties, addresses, and tenant assignments" 
-            href="/dashboard/owner/buildings" 
-            icon="🏘️" 
-          />
-          <ManagementCard 
-            title="Team (Handymen)" 
-            desc="Invite staff, assign buildings, track availability" 
-            href="/dashboard/owner/team" 
-            icon="" 
-          />
-          <ManagementCard 
-            title="Work Orders" 
-            desc="Monitor requests, approve jobs, view completion photos" 
-            href="/dashboard/owner/jobs" 
-            icon="📝" 
-          />
+          
+          {/* ️ Buildings - Coming Soon Alert (Fixed to prevent 404) */}
+          <button 
+            onClick={() => alert('️ Building management is coming in the next update!')}
+            className="group block p-5 border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition bg-white text-left w-full"
+          >
+            <div className="flex items-start gap-3">
+              <span className="text-2xl">🏘️</span>
+              <div>
+                <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition">Buildings</h3>
+                <p className="text-sm text-gray-500 mt-1">View properties, addresses, and tenant assignments</p>
+              </div>
+            </div>
+          </button>
+
+          {/*  Team - ✅ Fully Working Link */}
+          <Link href="/dashboard/owner/team" className="group block p-5 border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition bg-white">
+            <div className="flex items-start gap-3">
+              <span className="text-2xl">👥</span>
+              <div>
+                <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition">Team (Handymen)</h3>
+                <p className="text-sm text-gray-500 mt-1">Invite staff, assign buildings, track availability</p>
+              </div>
+            </div>
+          </Link>
+
+          {/* 📝 Work Orders - Coming Soon Alert (Fixed to prevent 404) */}
+          <button 
+            onClick={() => alert('📝 Work Order monitoring is coming in the next update!')}
+            className="group block p-5 border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition bg-white text-left w-full"
+          >
+            <div className="flex items-start gap-3">
+              <span className="text-2xl">📝</span>
+              <div>
+                <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition">Work Orders</h3>
+                <p className="text-sm text-gray-500 mt-1">Monitor requests, approve jobs, view completion photos</p>
+              </div>
+            </div>
+          </button>
+
         </div>
       </div>
     </div>
@@ -117,19 +140,5 @@ function StatCard({ title, value, icon, color }: { title: string, value: number,
         </div>
       </div>
     </div>
-  )
-}
-
-function ManagementCard({ title, desc, href, icon }: { title: string, desc: string, href: string, icon: string }) {
-  return (
-    <Link href={href} className="group block p-5 border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition bg-white">
-      <div className="flex items-start gap-3">
-        <span className="text-2xl">{icon}</span>
-        <div>
-          <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition">{title}</h3>
-          <p className="text-sm text-gray-500 mt-1">{desc}</p>
-        </div>
-      </div>
-    </Link>
   )
 }
