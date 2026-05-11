@@ -17,14 +17,15 @@ export default function OwnerDashboard() {
 
   const fetchDashboardData = async () => {
     try {
-      // 1. Verify user is actually an owner
-      const {  { user } } = await supabase.auth.getUser()
+      // ✅ FIXED: Added "data:" alias
+      const { data: { user } } = await supabase.auth.getUser()
       if (!user) return router.replace('/login')
 
-      const {  profile } = await supabase.from('users').select('role').eq('id', user.id).single()
+      // ✅ FIXED: Added "data:" alias
+      const { data: profile } = await supabase.from('users').select('role').eq('id', user.id).single()
       if (profile?.role !== 'owner') return router.replace('/dashboard')
 
-      // 2. Fetch counts (optimized with head: true)
+      // 2. Fetch counts efficiently
       const [bRes, tRes, hRes, jRes] = await Promise.all([
         supabase.from('buildings').select('*', { count: 'exact', head: true }),
         supabase.from('users').select('*', { count: 'exact', head: true }).eq('role', 'tenant'),
@@ -58,7 +59,7 @@ export default function OwnerDashboard() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900"> 👑 Owner Dashboard</h1>
+          <h1 className="text-3xl font-bold text-gray-900">👑 Owner Dashboard</h1>
           <p className="text-gray-500 mt-1">Manage properties, staff, and maintenance requests</p>
         </div>
         <button 
@@ -82,10 +83,9 @@ export default function OwnerDashboard() {
         <h2 className="text-xl font-semibold text-gray-900 mb-4">Management Hub</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          
-          {/* ️ Buildings - Coming Soon Alert (Fixed to prevent 404) */}
+          {/* 🏘️ Buildings - Coming Soon */}
           <button 
-            onClick={() => alert('️ Building management is coming in the next update!')}
+            onClick={() => alert('🏘️ Building management is coming in the next update!')}
             className="group block p-5 border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition bg-white text-left w-full"
           >
             <div className="flex items-start gap-3">
@@ -97,7 +97,7 @@ export default function OwnerDashboard() {
             </div>
           </button>
 
-          {/*  Team - ✅ Fully Working Link */}
+          {/* 👥 Team - ✅ Fully Working */}
           <Link href="/dashboard/owner/team" className="group block p-5 border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition bg-white">
             <div className="flex items-start gap-3">
               <span className="text-2xl">👥</span>
@@ -108,9 +108,9 @@ export default function OwnerDashboard() {
             </div>
           </Link>
 
-          {/* 📝 Work Orders - Coming Soon Alert (Fixed to prevent 404) */}
+          {/* 📝 Work Orders - Coming Soon */}
           <button 
-            onClick={() => alert('📝 Work Order monitoring is coming in the next update!')}
+            onClick={() => alert(' Work Order monitoring is coming in the next update!')}
             className="group block p-5 border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition bg-white text-left w-full"
           >
             <div className="flex items-start gap-3">
@@ -121,7 +121,6 @@ export default function OwnerDashboard() {
               </div>
             </div>
           </button>
-
         </div>
       </div>
     </div>
