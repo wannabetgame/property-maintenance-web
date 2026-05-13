@@ -17,10 +17,11 @@ export default function OwnerDashboard() {
 
   const fetchDashboardData = async () => {
     try {
-      // ✅ Correct Supabase destructuring
+      // ✅ FIXED: Added "data" keyword to destructuring
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return router.replace('/login')
 
+      // ✅ FIXED: Added "data" keyword to destructuring
       const { data: profile } = await supabase.from('users').select('role').eq('id', user.id).single()
       if (profile?.role !== 'owner') return router.replace('/dashboard')
 
@@ -71,7 +72,7 @@ export default function OwnerDashboard() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <StatCard title="Buildings" value={stats.buildings} icon="🏢" color="bg-blue-50 text-blue-700" />
+        <StatCard title="Buildings" value={stats.buildings} icon="" color="bg-blue-50 text-blue-700" />
         <StatCard title="Tenants" value={stats.tenants} icon="👥" color="bg-purple-50 text-purple-700" />
         <StatCard title="Handymen" value={stats.handymen} icon="🔧" color="bg-orange-50 text-orange-700" />
         <StatCard title="Active Jobs" value={stats.jobs} icon="📋" color="bg-green-50 text-green-700" />
@@ -83,10 +84,10 @@ export default function OwnerDashboard() {
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           
-          {/* 🏘️ Buildings - ✅ NOW LINKS TO REAL PAGE */}
+          {/* 🏘️ Buildings - LINK */}
           <Link href="/dashboard/owner/buildings" className="group block p-5 border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition bg-white">
             <div className="flex items-start gap-3">
-              <span className="text-2xl">🏘️</span>
+              <span className="text-2xl">️</span>
               <div>
                 <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition">Buildings</h3>
                 <p className="text-sm text-gray-500 mt-1">View properties, addresses, and tenant assignments</p>
@@ -94,7 +95,7 @@ export default function OwnerDashboard() {
             </div>
           </Link>
 
-          {/* 👥 Team - ✅ Fully Working */}
+          {/* 👥 Team - LINK */}
           <Link href="/dashboard/owner/team" className="group block p-5 border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition bg-white">
             <div className="flex items-start gap-3">
               <span className="text-2xl">👥</span>
@@ -105,19 +106,16 @@ export default function OwnerDashboard() {
             </div>
           </Link>
 
-          {/* 📝 Work Orders - Coming Soon */}
-          <button 
-            onClick={() => alert('📝 Work Order monitoring is coming in the next update!')}
-            className="group block p-5 border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition bg-white text-left w-full"
-          >
+          {/* 📋 Work Orders - LINK */}
+          <Link href="/dashboard/owner/jobs" className="group block p-5 border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition bg-white">
             <div className="flex items-start gap-3">
-              <span className="text-2xl">📝</span>
+              <span className="text-2xl">📋</span>
               <div>
                 <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition">Work Orders</h3>
                 <p className="text-sm text-gray-500 mt-1">Monitor requests, approve jobs, view completion photos</p>
               </div>
             </div>
-          </button>
+          </Link>
 
         </div>
       </div>
